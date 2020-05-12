@@ -1,58 +1,85 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const data = {
-    day05052020: [
-      {
-        id: 'task0505202013451',
-        content: 'Задача 1',
-        check: false
+  const now = new Date(),
+    data = {
+      day05052020: [
+        {
+          id: 'task0505202013451',
+          content: 'Задача 1',
+          check: false
         },
-      {
-        id: 'task0505202014202',
-        content: 'Задача 2',
-        check: true
+        {
+          id: 'task0505202014202',
+          content: 'Задача 2',
+          check: true
         },
-      {
-        id: 'task0505202015393',
-        content: 'Задача 3',
-        check: false
+        {
+          id: 'task0505202015393',
+          content: 'Задача 3',
+          check: false
         }
       ],
-    day06052020: [],
-    day07052020: [
-      {
-        id: 'task0705202013451',
-        content: 'Задача 1',
-        check: true
+      day06052020: [],
+      day07052020: [
+        {
+          id: 'task0705202013451',
+          content: 'Задача 1',
+          check: true
         },
-      {
-        id: 'task0705202014202',
-        content: 'Задача 2',
-        check: true
+        {
+          id: 'task0705202014202',
+          content: 'Задача 2',
+          check: true
         },
-      {
-        id: 'task0705202015393',
-        content: 'Задача 3',
-        check: false
+        {
+          id: 'task0705202015393',
+          content: 'Задача 3',
+          check: false
         }
       ],
-    day08052020: []
-  };
+      day08052020: []
+    };
 
   const body = document.body,
     control = document.querySelector('.control'),
     controlInput = control.querySelector('.control__input'),
     taskActive = document.querySelector('.task__active'),
-    taskCheck = document.querySelector('.task__check');
+    taskCheck = document.querySelector('.task__check'),
+    dashboard = document.querySelector('.dashboard');
+
+  /* Уникальный id создается благодаря метке времени */
+  const createTaskId = () => {
+    let id = `task${Date.now()}`;
+    return id;
+  };
+
+  const loadTask = () => {
+
+  };
 
   /* Создание создание задачи */
-  const createTask = (content) => {
-    let task = document.createElement('li');
+  const createTask = (id, content) => {
+    const taskObj = {
+      id,
+      content,
+      check: false
+    };
+    const task = document.createElement('li');
 
     task.classList.add('task__item');
+    task.id = id;
     task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}</span><button class="button button__delete"></button>`;
 
     return task;
-  }
+  };
+
+  /* Удаление задачи */
+  const deleteTask = (event) => {
+    const target = event.target;
+
+    if (target.closest('.button__delete')) {
+
+    }
+  };
 
   /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
   const addTask = (event) => {
@@ -61,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target.closest('.button__add') && !controlInput.classList.contains('control__edit')) {
       controlInput.classList.add('control__edit');
     } else if (target.closest('.button__add') && controlInput.value) {
-      const task = createTask(controlInput.value);
+      const task = createTask(createTaskId(), controlInput.value);
       taskActive.prepend(task);
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
@@ -72,5 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   control.addEventListener('click', addTask);
+  dashboard.addEventListener('click', deleteTask);
 
 });
