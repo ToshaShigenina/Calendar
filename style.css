@@ -220,6 +220,7 @@ body {
 }
 
 .control {
+  position: relative;
   width: 70%;
   max-width: 1200px;
   /*  min-width: 1000px;*/
@@ -255,12 +256,8 @@ body {
   width: calc(100% - 70px);
 }
 
-.control__input + .button {
-  opacity: 0;
-}
-
-.control__edit + .button {
-  opacity: 1;
+.control__edit + .button__add {
+  position: relative;
 }
 
 .dashboard {
@@ -284,33 +281,41 @@ body {
   overflow: hidden;
 }
 
+.button::before {
+  -webkit-transition: -webkit-transform .5s;
+  transition: -webkit-transform .5s;
+  transition: transform .5s;
+  transition: transform .5s, -webkit-transform .5s;
+}
+
 .button:hover {
   cursor: pointer;
 }
 
 .button__add {
-  position: relative;
+  position: absolute;
   background-color: #4caf50;
+  top: 0;
+  left: 0;
 }
 
 .button__add::before,
 .button__delete::before {
   position: absolute;
   display: block;
-  top: 0;
-  left: 0;
-  content: '+';
-  color: #fff;
-  font-size: 34px;
-  line-height: 30px;
-  width: 30px;
-  text-align: center;
+  top: 5px;
+  left: 5px;
+  content: '';
+  height: 20px;
+  width: 20px;
+  background-image: url('plus.svg');
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 
 .button__add:hover {
   background-color: #43a047;
-  -webkit-transform: rotateZ(180deg);
-  transform: rotateZ(180deg);
 }
 
 .button__delete {
@@ -325,8 +330,6 @@ body {
 
 .button__delete:hover {
   background-color: #e53935;
-  -webkit-transform: rotateZ(180deg);
-  transform: rotateZ(180deg);
 }
 
 .button__check {
@@ -334,27 +337,6 @@ body {
   background-color: #fff;
   -webkit-box-shadow: 0 0 1px 1px #2b2b2b;
   box-shadow: 0 0 1px 1px #2b2b2b;
-}
-
-.button__check::before {
-  position: absolute;
-  content: '';
-  width: 7px;
-  height: 14px;
-  border: 2px solid #2b2b2b;
-  border-top-color: transparent;
-  border-left-color: transparent;
-  top: 3px;
-  left: 9px;
-  -webkit-transform: rotateZ(45deg);
-  transform: rotateZ(45deg);
-  opacity: .5;
-  -webkit-transition: opacity .5s;
-  transition: opacity .5s;
-}
-
-.button__check:hover::before {
-  opacity: 1;
 }
 
 .task {
@@ -407,14 +389,21 @@ body {
   box-shadow: none;
 }
 
-.task__check .button__check::before {
-  border-bottom-color: #fff;
-  border-right-color: #fff;
-  opacity: 1;
-}
-
 .task__check .button__check:hover {
   background-color: #42a5f5;
+}
+
+.task__check .button__check::before {
+  position: absolute;
+  content: '';
+  top: 6px;
+  left: 6px;
+  width: 18px;
+  height: 18px;
+  background-image: url('tick.svg');
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 
 @media (max-width: 2100px) {
