@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     taskCheck = document.querySelector('.task__check'),
     dashboard = document.querySelector('.dashboard');
 
+  let month = now.getMonth(),
+    year = now.getFullYear();
+
   /* Создание пустого элемента дня для добавления в календарь */
   const createDay = (content) => {
     const day = document.createElement('span');
@@ -120,6 +123,45 @@ document.addEventListener('DOMContentLoaded', () => {
         dayOfMonth++;
       }
     }
+  };
+
+  /* Для ограничения выбран 2050 год, т.к. в виндоус это максимальный год, который можно установить в настройках даты и времени */
+  const calendarNext = () => {
+    month++;
+    if (month === 11) {
+      month = 0;
+      year++;
+      if (year > 2050) {
+        year = 2050;
+        month = 11;
+      }
+    }
+  };
+
+
+  /* Назад на 20 лет, думаю, хватит */
+  const calendarPrev = () => {
+    month--;
+    if (month === -1) {
+      month = 11;
+      year--;
+      if (year < 2000) {
+        year = 2000;
+        month = 0;
+      }
+    }
+  };
+
+  const changeMonth = (event) => {
+    const target = event.target;
+
+    if (target.closest('.arrow__prev')) {
+      calendarPrev();
+    } else if (target.closest('.arrow__next')) {
+      calendarNext();
+    }
+
+    createCalendar(new Date(year, month, now.getDate()));
   };
 
   /* Уникальный id создается благодаря метке времени */
@@ -197,5 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
   control.addEventListener('click', addTask);
   dashboard.addEventListener('click', deleteTask);
   dashboard.addEventListener('click', checkTask);
+  calendar.addEventListener('click', changeMonth);
 
 });

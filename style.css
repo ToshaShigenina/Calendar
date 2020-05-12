@@ -256,6 +256,7 @@ body {
   transition: width .5s;
 }
 
+.arrow:focus,
 .control__input:focus,
 .button:focus {
   outline: none;
