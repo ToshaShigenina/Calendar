@@ -44,32 +44,33 @@ document.addEventListener('DOMContentLoaded', () => {
     taskActive = document.querySelector('.task__active'),
     taskCheck = document.querySelector('.task__check');
 
-  const editControl = (event) => {
+  /* Создание создание задачи */
+  const createTask = (content) => {
+    let task = document.createElement('li');
+
+    task.classList.add('task__item');
+    task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}</span><button class="button button__delete"></button>`;
+
+    return task;
+  }
+
+  /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
+  const addTask = (event) => {
     let target = event.target;
 
-    if (target.closest('.button__add')) {
-      if (target.nextElementSibling.closest('.control__input') && !target.classList.contains('button__delete')) {
-        target.classList.add('button__delete');
-        target.nextElementSibling.classList.add('control__edit');
-      } else {
-        controlInput.value = '';
-        target.classList.remove('button__delete');
-        target.nextElementSibling.classList.remove('control__edit');
-      }
-    }
-
-    if (target.closest('.button__check') && controlInput.value) {
-      let task = document.createElement('li');
-      task.classList.add('task__item');
-      task.innerHTML = `<button class="button button__check"></button><span class="task__content"></span><button class="button button__delete"></button>`;
-      task.querySelector('.task__content').textContent = controlInput.value;
+    if (target.closest('.button__add') && !controlInput.classList.contains('control__edit')) {
+      controlInput.classList.add('control__edit');
+    } else if (target.closest('.button__add') && controlInput.value) {
+      const task = createTask(controlInput.value);
       taskActive.prepend(task);
       controlInput.value = '';
-      target.previousElementSibling.classList.remove('control__edit');
-      document.querySelector('.control .button__add').classList.remove('button__delete');
+      controlInput.classList.remove('control__edit');
+    } else if (target.closest('.button__delete')) {
+      controlInput.value = '';
+      controlInput.classList.remove('control__edit');
     }
   };
 
-  control.addEventListener('click', editControl);
+  control.addEventListener('click', addTask);
 
 });
