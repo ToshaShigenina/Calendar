@@ -91,8 +91,23 @@ body {
   overflow-y: hidden;
 }
 
-.calendar__month {
+.calendar__week {
   margin-top: .5rem;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(7, 22px);
+  grid-template-rows: 22px;
+  font-size: 9px;
+  text-align: center;
+  grid-gap: 4px;
+}
+
+.week {
+  line-height: 20px;
+  opacity: .7;
+}
+
+.calendar__month {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(7, 22px);
@@ -102,10 +117,6 @@ body {
   grid-gap: 4px;
 }
 
-.week {
-  font-size: 90%;
-  opacity: .7;
-}
 
 .day {
   border-radius: 50%;
@@ -451,6 +462,18 @@ body {
   .calendar {
     max-width: 210px;
     margin-right: auto;
+  }
+
+
+  .calendar__week {
+    grid-template-columns: repeat(7, 26px);
+    grid-template-rows: 26px;
+    font-size: 11px;
+  }
+
+  .week {
+    line-height: 24px;
+    opacity: .7;
   }
 
   .calendar__month {

@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     taskCheck = document.querySelector('.task__check'),
     dashboard = document.querySelector('.dashboard');
 
+  /* Создание пустого элемента дня для добавления в календарь */
   const createDay = (content) => {
     const day = document.createElement('span');
     day.className = 'day';
@@ -53,15 +54,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return day;
   };
 
+  /* Генерация календаря на месяц */
   const createCalendar = (date) => {
     const year = date.getFullYear(),
       month = date.getMonth(),
       dayActive = date.getDate(),
-      dayOfMonth = 1,
-      dayOfWeek = new Date(year, month, 1).getDay() == 0 ? 6 : new Date(year, month, 1).getDay() - 1,
-      monthLength = 33 - new Date(year, month, 33).getDate(),
+      dayFirstOfWeek = new Date(year, month, 1).getDay() == 0 ? 6 : new Date(year, month, 1).getDay() - 1,
+      dayLast = 33 - new Date(year, month, 33).getDate(),
+      dayLastOfWeek = new Date(year, month, dayLast).getDay() == 0 ? 6 : new Date(year, month, dayLast).getDay() - 1,
       calendarTitle = calendar.querySelector('.calendar__title'),
       calendarMonth = calendar.querySelector('.calendar__month');
+
+    let dayOfMonth = 33 - new Date(year, month - 1, 33).getDate();
+
+    calendarMonth.innerHTML = '';
 
     const months = [
         'Январь',
@@ -80,14 +86,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calendarTitle.textContent = `${months[month]} ${year}`;
 
-    if (dayOfWeek !== 0) {
-      for (let i = 0; i < dayOfWeek; i++) {
-        let day = createDay(0);
+    if (dayFirstOfWeek !== 0) {
+      dayOfMonth -= (dayFirstOfWeek - 1);
+      for (let i = 0; i < dayFirstOfWeek; i++) {
+        let day = createDay(dayOfMonth);
+        day.classList.add('day__over');
+        day.dataset.day = `day${dayOfMonth}${month-1}${year}`;
         calendarMonth.append(day);
+        dayOfMonth++;
       }
     }
 
+    dayOfMonth = 1;
 
+    while (dayOfMonth <= dayLast) {
+      let day = createDay(dayOfMonth);
+      if (dayOfMonth === dayActive) {
+        day.classList.add('day__active');
+      }
+      day.dataset.day = `day${dayOfMonth}${month}${year}`;
+      calendarMonth.append(day);
+      dayOfMonth++;
+    }
+
+    dayOfMonth = 1;
+
+    if (dayLastOfWeek < 6) {
+      for (let i = dayLastOfWeek + 1; i <= 6; i++) {
+        let day = createDay(dayOfMonth);
+        day.classList.add('day__over');
+        day.dataset.day = `day${dayOfMonth}${month+1}${year}`;
+        calendarMonth.append(day);
+        dayOfMonth++;
+      }
+    }
   };
 
   /* Уникальный id создается благодаря метке времени */
