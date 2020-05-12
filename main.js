@@ -39,12 +39,56 @@ document.addEventListener('DOMContentLoaded', () => {
       day08052020: []
     };
 
-  const body = document.body,
+  const calendar = document.querySelector('.calendar'),
     control = document.querySelector('.control'),
     controlInput = control.querySelector('.control__input'),
     taskActive = document.querySelector('.task__active'),
     taskCheck = document.querySelector('.task__check'),
     dashboard = document.querySelector('.dashboard');
+
+  const createDay = (content) => {
+    const day = document.createElement('span');
+    day.className = 'day';
+    day.textContent = content;
+    return day;
+  };
+
+  const createCalendar = (date) => {
+    const year = date.getFullYear(),
+      month = date.getMonth(),
+      dayActive = date.getDate(),
+      dayOfMonth = 1,
+      dayOfWeek = new Date(year, month, 1).getDay() == 0 ? 6 : new Date(year, month, 1).getDay() - 1,
+      monthLength = 33 - new Date(year, month, 33).getDate(),
+      calendarTitle = calendar.querySelector('.calendar__title'),
+      calendarMonth = calendar.querySelector('.calendar__month');
+
+    const months = [
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь'
+      ];
+
+    calendarTitle.textContent = `${months[month]} ${year}`;
+
+    if (dayOfWeek !== 0) {
+      for (let i = 0; i < dayOfWeek; i++) {
+        let day = createDay(0);
+        calendarMonth.append(day);
+      }
+    }
+
+
+  };
 
   /* Уникальный id создается благодаря метке времени */
   const createTaskId = () => {
@@ -83,8 +127,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const checkTask = () => {
+  /* Выполнение / Невыполнение задачи. Задчаи перемешиваются.
+  Пока без объекта */
+  const checkTask = (event) => {
+    const target = event.target;
 
+    if (target.closest('.button__check')) {
+      const task = target.closest('.task__item');
+
+      if (target.closest('.task') === taskActive) {
+        taskCheck.prepend(task);
+      } else if (target.closest('.task') === taskCheck) {
+        taskActive.prepend(task);
+      }
+    }
   };
 
   /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
@@ -104,7 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  createCalendar(now);
+
   control.addEventListener('click', addTask);
   dashboard.addEventListener('click', deleteTask);
+  dashboard.addEventListener('click', checkTask);
 
 });
