@@ -72,13 +72,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return task;
   };
 
-  /* Удаление задачи */
+  /* Удаление задачи.
+  Добавить удаление задачи из объекта. */
   const deleteTask = (event) => {
     const target = event.target;
 
     if (target.closest('.button__delete')) {
-
+      const task = target.closest('.task__item');
+      task.remove();
     }
+  };
+
+  const checkTask = () => {
+
   };
 
   /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
