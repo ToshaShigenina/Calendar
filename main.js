@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date(),
     data = JSON.parse(localStorage.getItem('calendarData')) || {};
@@ -8,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     taskActive = document.querySelector('.task__active'),
     taskCheck = document.querySelector('.task__check'),
     dashboard = document.querySelector('.dashboard'),
-    title = document.querySelector('h1.title');
+    title = document.querySelector('h1.title'),
+    menu = document.querySelector('.menu');
 
   let month = now.getMonth(),
     year = now.getFullYear(),
@@ -320,12 +323,26 @@ document.addEventListener('DOMContentLoaded', () => {
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
     }
-
-    console.log(data);
   };
 
   createCalendar(now);
 
+  document.body.addEventListener('click', (event) => {
+    let target = event.target;
+
+    const toggleMenu = () => {
+      menu.classList.toggle('menu_visible');
+    };
+
+    if (target.closest('.burger__menu')) {
+      toggleMenu();
+    } else {
+      target = target.closest('.menu');
+      if (!target && menu.classList.contains('menu_visible')) {
+        toggleMenu();
+      }
+    }
+  });
   window.addEventListener('load', loadDaySelect);
   control.addEventListener('click', addTask);
   dashboard.addEventListener('click', deleteTask);
