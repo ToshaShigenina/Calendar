@@ -229,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!obj) {
       data[dayId].push(taskObj);
-      console.log(data[dayId]);
     }
 
     return task;
@@ -246,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* Выполнение / Невыполнение задачи. Задчаи перемешиваются.
+  /* Выполнение / Невыполнение задачи. Задачи перемешиваются.
   Пока без объекта */
   const checkTask = (event) => {
     const target = event.target;
@@ -256,8 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (target.closest('.task') === taskActive) {
         taskCheck.prepend(task);
+        data[dayId].forEach((item) => {
+          if (item.id === task.id) {
+            item.check = true;
+          }
+        });
       } else if (target.closest('.task') === taskCheck) {
         taskActive.prepend(task);
+        data[dayId].forEach((item) => {
+          if (item.id === task.id) {
+            item.check = false;
+          }
+        });
       }
     }
   };
