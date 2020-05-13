@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date(),
     data = {
-      day05052020: [
+      day13042020: [
         {
           id: 'task0505202013451',
           content: 'Задача 1',
@@ -18,8 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
           check: false
         }
       ],
-      day06052020: [],
-      day07052020: [
+      day07042020: [
         {
           id: 'task0705202013451',
           content: 'Задача 1',
@@ -35,8 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
           content: 'Задача 3',
           check: false
         }
-      ],
-      day08052020: []
+      ]
     };
 
   const calendar = document.querySelector('.calendar'),
@@ -47,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dashboard = document.querySelector('.dashboard');
 
   let month = now.getMonth(),
-    year = now.getFullYear();
+    year = now.getFullYear(),
+    dayId;
 
   /* Создание пустого элемента дня для добавления в календарь */
   const createDay = (content) => {
@@ -94,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < dayFirstOfWeek; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `${dayOfMonth}${month-1<10?'0'+(month-1):month-1}${year}`;
+        day.dataset.day = `day${dayOfMonth}${month-1<10?'0'+(month-1):month-1}${year}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -107,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dayOfMonth === dayActive) {
         day.classList.add('day__active');
       }
-      day.dataset.day = `${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month<10?'0'+month:month}${year}`;
+      day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month<10?'0'+month:month}${year}`;
       calendarMonth.append(day);
       dayOfMonth++;
     }
@@ -118,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = dayLastOfWeek + 1; i <= 6; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month+1<10?'0'+(month+1):month+1}${year}`;
+        day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month+1<10?'0'+(month+1):month+1}${year}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -167,8 +166,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   const loadTask = () => {
-    const daySelect = calendar.querySelector('span.day__select');
-    //const day = daySelect.dataset.day.
+    const tasks = data[dayId];
+    taskCheck.innerHTML = '';
+    taskActive.innerHTML = '';
+    if (tasks)
+      tasks.forEach((item) => {
+        const task = createTask(item.id, item.content);
+        if (item.check) {
+          taskCheck.prepend(task);
+        } else {
+          taskActive.prepend(task);
+        }
+      });
   };
 
 
@@ -177,14 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let daySelect = calendar.querySelector('span.day__active');
     if (event.type === 'load') {
       daySelect.classList.add('day__select');
+      dayId = daySelect.dataset.day;
+      loadTask();
     } else if (event.type === 'click') {
       daySelect = calendar.querySelector('span.day__select');
       const target = event.target.closest('.day');
       if (daySelect && target && target !== daySelect) {
         target.classList.add('day__select');
         daySelect.classList.remove('day__select');
+        dayId = target.dataset.day;
+        loadTask();
       } else if (target && target !== daySelect) {
         target.classList.add('day__select');
+        dayId = target.dataset.day;
+        loadTask();
       }
     }
   };
@@ -197,16 +212,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Создание создание задачи */
   const createTask = (id, content) => {
+    const task = document.createElement('li');
     const taskObj = {
       id,
       content,
       check: false
     };
-    const task = document.createElement('li');
 
     task.classList.add('task__item');
     task.id = id;
     task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}</span><button class="button button__delete"></button>`;
+
+    const obj = data[dayId].find((item) => {
+      return item.id === id;
+    });
+
+    if (!obj) {
+      data[dayId].push(taskObj);
+      console.log(data[dayId]);
+    }
 
     return task;
   };
