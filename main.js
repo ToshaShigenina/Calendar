@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     taskActive.innerHTML = '';
     if (tasks)
       tasks.forEach((item) => {
-        const task = createTask(item.id, item.content);
+        const task = createTask(item.id, item.content, item.date);
         if (item.check) {
           taskCheck.prepend(task);
         } else {
@@ -273,17 +273,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* Создание создание задачи */
-  const createTask = (id, content) => {
+  const createTask = (id, content, date) => {
     const task = document.createElement('li');
     const taskObj = {
       id,
       content,
+      date,
       check: false
     };
 
     task.classList.add('task__item');
     task.id = id;
-    task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}</span><button class="button button__delete"></button>`;
+    task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}<span class="task__date">${date}</span></span><button class="button button__delete"></button>`;
 
     if (!data[dayId]) {
       data[dayId] = [];
@@ -354,7 +355,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target.closest('.button__add') && !controlInput.classList.contains('control__edit')) {
       controlInput.classList.add('control__edit');
     } else if (target.closest('.button__add') && controlInput.value) {
-      const task = createTask(createTaskId(), controlInput.value);
+      const date = document.querySelector('span.day__select').dataset.day;
+      console.log(date);
+      const task = createTask(createTaskId(), controlInput.value, `${date.slice(3, 5)}.${transformValue(+date.slice(5, 7)+1)}.${date.slice(7)}`);
       taskActive.prepend(task);
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
