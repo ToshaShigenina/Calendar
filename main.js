@@ -58,12 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calendarTitle.textContent = `${months[month]} ${year}`;
 
+    const newLastMonth = () => {
+      if (month - 1 === -1) return '11';
+      else if (month - 1 < 10) return '0' + (month - 1);
+      else return month - 1;
+    };
+
+    const newLastYear = () => {
+      if (month - 1 === -1) return year - 1;
+      else return year;
+    };
+
     if (dayFirstOfWeek !== 0) {
       dayOfMonth -= (dayFirstOfWeek - 1);
       for (let i = 0; i < dayFirstOfWeek; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `day${dayOfMonth}${month-1<10?'0'+(month-1):month-1}${year}`;
+        day.dataset.day = `day${dayOfMonth}${newLastMonth()}${newLastYear()}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -83,11 +94,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dayOfMonth = 1;
 
+    const newNextMonth = () => {
+      if (month + 1 === 12) return '00';
+      else if (month + 1 < 10) return '0' + (month + 1);
+      else return month + 1;
+    };
+
+    const newNextYear = () => {
+      if (month + 1 === 12) return year + 1;
+      else return year;
+    };
+
     if (dayLastOfWeek < 6) {
       for (let i = dayLastOfWeek + 1; i <= 6; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month+1<10?'0'+(month+1):month+1}${year}`;
+        day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${newNextMonth()}${newNextYear()}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -165,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'июля',
       'августа',
       'сентября',
+      'октября',
       'ноября',
       'декабря'
     ];
