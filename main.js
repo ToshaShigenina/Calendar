@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     controlInput = control.querySelector('.control__input'),
     taskActive = document.querySelector('.task__active'),
     taskCheck = document.querySelector('.task__check'),
-    dashboard = document.querySelector('.dashboard');
+    dashboard = document.querySelector('.dashboard'),
+    title = document.querySelector('h1.title');
 
   let month = now.getMonth(),
     year = now.getFullYear(),
@@ -149,6 +150,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   };
 
+  const createTitle = () => {
+    let day = dayId.slice(3, 5),
+      month = dayId.slice(5, 7),
+      year = dayId.slice(7);
+
+    const months = [
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'ноября',
+      'декабря'
+    ];
+
+    day = day[0] === '0' ? day.slice(1) : day;
+    month = month[0] === '0' ? month.slice(1) : month;
+
+    title.textContent = `${day} ${months[month]} ${year}`;
+  };
 
   /* Загрузка выбранного дня */
   const loadDaySelect = (event) => {
@@ -156,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.type === 'load') {
       daySelect.classList.add('day__select');
       dayId = daySelect.dataset.day;
+      createTitle();
       loadTask();
     } else if (event.type === 'click') {
       daySelect = calendar.querySelector('span.day__select');
@@ -164,10 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
         target.classList.add('day__select');
         daySelect.classList.remove('day__select');
         dayId = target.dataset.day;
+        createTitle();
         loadTask();
       } else if (target && target !== daySelect) {
         target.classList.add('day__select');
         dayId = target.dataset.day;
+        createTitle();
         loadTask();
       }
     }
@@ -208,8 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return task;
   };
 
-  /* Удаление задачи.
-  Добавить удаление задачи из объекта. */
+  /* Удаление задачи. */
   const deleteTask = (event) => {
     const target = event.target;
 
@@ -228,8 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* Выполнение / Невыполнение задачи. Задачи перемешиваются.
-  Пока без объекта */
+  /* Выполнение / Невыполнение задачи. Задачи перемешиваются. */
   const checkTask = (event) => {
     const target = event.target;
 
