@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     taskCheck = document.querySelector('.task__check'),
     dashboard = document.querySelector('.dashboard'),
     title = document.querySelector('h1.title'),
+    burgerMenu = document.querySelector('.burger__menu'),
     menu = document.querySelector('.menu');
 
   let month = now.getMonth(),
@@ -332,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toggleMenu = () => {
       menu.classList.toggle('menu_visible');
+      burgerMenu.classList.toggle('burger__close');
     };
 
     if (target.closest('.burger__menu')) {
