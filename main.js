@@ -1,41 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date(),
-    data = {
-      day13042020: [
-        {
-          id: 'task0505202013451',
-          content: 'Задача 1',
-          check: false
-        },
-        {
-          id: 'task0505202014202',
-          content: 'Задача 2',
-          check: true
-        },
-        {
-          id: 'task0505202015393',
-          content: 'Задача 3',
-          check: false
-        }
-      ],
-      day07042020: [
-        {
-          id: 'task0705202013451',
-          content: 'Задача 1',
-          check: true
-        },
-        {
-          id: 'task0705202014202',
-          content: 'Задача 2',
-          check: true
-        },
-        {
-          id: 'task0705202015393',
-          content: 'Задача 3',
-          check: false
-        }
-      ]
-    };
+    data = JSON.parse(localStorage.getItem('calendarData')) || {};
 
   const calendar = document.querySelector('.calendar'),
     control = document.querySelector('.control'),
@@ -47,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let month = now.getMonth(),
     year = now.getFullYear(),
     dayId;
+
+  const saveData = () => {
+    localStorage.setItem('calendarData', JSON.stringify(data));
+  };
 
   /* Создание пустого элемента дня для добавления в календарь */
   const createDay = (content) => {
@@ -223,12 +192,17 @@ document.addEventListener('DOMContentLoaded', () => {
     task.id = id;
     task.innerHTML = `<button class="button button__check"></button><span class="task__content">${content}</span><button class="button button__delete"></button>`;
 
+    if (!data[dayId]) {
+      data[dayId] = [];
+    }
+
     const obj = data[dayId].find((item) => {
       return item.id === id;
     });
 
     if (!obj) {
       data[dayId].push(taskObj);
+      saveData();
     }
 
     return task;
@@ -241,7 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (target.closest('.button__delete')) {
       const task = target.closest('.task__item');
+      if (data[dayId].length > 1) {
+        let index = data[dayId].findIndex((item) => {
+          return item.id === task.id;
+        });
+        data[dayId].splice(index, 1);
+      } else {
+        delete data[dayId];
+      }
       task.remove();
+      saveData();
     }
   };
 
@@ -268,6 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       }
+
+      saveData();
     }
   };
 
@@ -286,6 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
     }
+
+    console.log(data);
   };
 
   createCalendar(now);
