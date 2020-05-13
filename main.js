@@ -18,8 +18,48 @@ document.addEventListener('DOMContentLoaded', () => {
     year = now.getFullYear(),
     dayId;
 
-  const saveData = () => {
-    localStorage.setItem('calendarData', JSON.stringify(data));
+  const transformValue = (val) => {
+    return val < 10 ? '0' + val : val;
+  };
+
+  const loadData = (val) => {
+    const isEmpty = (obj) => {
+      for (let key in obj) {
+        return false;
+      }
+      return true;
+    };
+
+    if (!isEmpty(val)) {
+      let dayID = `day${transformValue(now.getDate())}${transformValue(now.getMonth())}${now.getFullYear()}`;
+
+      if (!val[dayID]) {
+        val[dayID] = [];
+      }
+
+      for (let key in val) {
+        if (key !== dayID && key < dayID) {
+          val[key].forEach((item, index) => {
+            if (!item.check) {
+              val[dayID].push(item);
+              val[key].splice(index, 1);
+            }
+          });
+        }
+      }
+    }
+  };
+
+  loadData(data);
+
+  const saveData = (val) => {
+    for (let key in val) {
+      if (!val[key].length) {
+        delete val[key];
+      }
+    }
+
+    localStorage.setItem('calendarData', JSON.stringify(val));
   };
 
   /* Создание пустого элемента дня для добавления в календарь */
@@ -41,10 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
       calendarTitle = calendar.querySelector('.calendar__title'),
       calendarMonth = calendar.querySelector('.calendar__month');
 
-    let dayOfMonth = 33 - new Date(year, month - 1, 33).getDate();
-
-    calendarMonth.innerHTML = '';
-
     const months = [
         'Январь',
         'Февраль',
@@ -60,18 +96,31 @@ document.addEventListener('DOMContentLoaded', () => {
         'Декабрь'
       ];
 
-    calendarTitle.textContent = `${months[month]} ${year}`;
+    let dayOfMonth = 33 - new Date(year, month - 1, 33).getDate();
 
     const newLastMonth = () => {
       if (month - 1 === -1) return '11';
-      else if (month - 1 < 10) return '0' + (month - 1);
-      else return month - 1;
+      return transformValue(month - 1);
     };
 
     const newLastYear = () => {
       if (month - 1 === -1) return year - 1;
-      else return year;
+      return year;
     };
+
+    const newNextMonth = () => {
+      if (month + 1 === 12) return '00';
+      return transformValue(month + 1);
+    };
+
+    const newNextYear = () => {
+      if (month + 1 === 12) return year + 1;
+      return year;
+    };
+
+    calendarMonth.innerHTML = '';
+
+    calendarTitle.textContent = `${months[month]} ${year}`;
 
     if (dayFirstOfWeek !== 0) {
       dayOfMonth -= (dayFirstOfWeek - 1);
@@ -91,29 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dayOfMonth === dayActive) {
         day.classList.add('day__active');
       }
-      day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month<10?'0'+month:month}${year}`;
+      day.dataset.day = `day${transformValue(dayOfMonth)}${transformValue(month)}${year}`;
       calendarMonth.append(day);
       dayOfMonth++;
     }
 
     dayOfMonth = 1;
 
-    const newNextMonth = () => {
-      if (month + 1 === 12) return '00';
-      else if (month + 1 < 10) return '0' + (month + 1);
-      else return month + 1;
-    };
-
-    const newNextYear = () => {
-      if (month + 1 === 12) return year + 1;
-      else return year;
-    };
-
     if (dayLastOfWeek < 6) {
       for (let i = dayLastOfWeek + 1; i <= 6; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `day${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${newNextMonth()}${newNextYear()}`;
+        day.dataset.day = `day${transformValue(dayOfMonth)}${newNextMonth()}${newNextYear()}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -257,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!obj) {
       data[dayId].push(taskObj);
-      saveData();
+      saveData(data);
     }
 
     return task;
@@ -278,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delete data[dayId];
       }
       task.remove();
-      saveData();
+      saveData(data);
     }
   };
 
@@ -305,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      saveData();
+      saveData(data);
     }
   };
 
@@ -326,9 +364,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  createCalendar(now);
-
-  document.body.addEventListener('click', (event) => {
+  /* Открыть/закрыть календарь для узких экранов */
+  const changeMenu = (event) => {
     let target = event.target;
 
     const toggleMenu = () => {
@@ -344,7 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleMenu();
       }
     }
-  });
+  };
+
+  createCalendar(now);
+
+  document.body.addEventListener('click', changeMenu);
   window.addEventListener('load', loadDaySelect);
   control.addEventListener('click', addTask);
   dashboard.addEventListener('click', deleteTask);
