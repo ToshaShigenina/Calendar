@@ -164,6 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
     createCalendar(new Date(year, month, now.getDate()));
   };
 
+  /* Загрузка выбранного дня */
+  const loadDaySelect = (event) => {
+    console.log(typeof event.type);
+  };
+
   /* Уникальный id создается благодаря метке времени */
   const createTaskId = () => {
     let id = `task${Date.now()}`;
@@ -236,9 +241,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   createCalendar(now);
 
+  window.addEventListener('load', loadDaySelect);
   control.addEventListener('click', addTask);
   dashboard.addEventListener('click', deleteTask);
   dashboard.addEventListener('click', checkTask);
   calendar.addEventListener('click', changeMonth);
+  calendar.addEventListener('click', loadDaySelect);
 
 });
