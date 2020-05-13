@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < dayFirstOfWeek; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `day${dayOfMonth}${month-1}${year}`;
+        day.dataset.day = `${dayOfMonth}${month-1<10?'0'+(month-1):month-1}${year}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dayOfMonth === dayActive) {
         day.classList.add('day__active');
       }
-      day.dataset.day = `day${dayOfMonth}${month}${year}`;
+      day.dataset.day = `${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month<10?'0'+month:month}${year}`;
       calendarMonth.append(day);
       dayOfMonth++;
     }
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = dayLastOfWeek + 1; i <= 6; i++) {
         let day = createDay(dayOfMonth);
         day.classList.add('day__over');
-        day.dataset.day = `day${dayOfMonth}${month+1}${year}`;
+        day.dataset.day = `${dayOfMonth<10?'0'+dayOfMonth:dayOfMonth}${month+1<10?'0'+(month+1):month+1}${year}`;
         calendarMonth.append(day);
         dayOfMonth++;
       }
@@ -155,28 +155,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const changeMonth = (event) => {
     const target = event.target;
 
-    if (target.closest('.arrow__prev')) {
-      calendarPrev();
-    } else if (target.closest('.arrow__next')) {
-      calendarNext();
+    if (target.closest('.arrow')) {
+      if (target.matches('.arrow__prev')) {
+        calendarPrev();
+      } else if (target.matches('.arrow__next')) {
+        calendarNext();
+      }
+      createCalendar(new Date(year, month, now.getDate()));
     }
-
-    createCalendar(new Date(year, month, now.getDate()));
   };
+
+
+  const loadTask = () => {
+    const daySelect = calendar.querySelector('span.day__select');
+    //const day = daySelect.dataset.day.
+  };
+
 
   /* Загрузка выбранного дня */
   const loadDaySelect = (event) => {
-    console.log(typeof event.type);
+    let daySelect = calendar.querySelector('span.day__active');
+    if (event.type === 'load') {
+      daySelect.classList.add('day__select');
+    } else if (event.type === 'click') {
+      daySelect = calendar.querySelector('span.day__select');
+      const target = event.target.closest('.day');
+      if (daySelect && target && target !== daySelect) {
+        target.classList.add('day__select');
+        daySelect.classList.remove('day__select');
+      } else if (target && target !== daySelect) {
+        target.classList.add('day__select');
+      }
+    }
   };
 
   /* Уникальный id создается благодаря метке времени */
   const createTaskId = () => {
     let id = `task${Date.now()}`;
     return id;
-  };
-
-  const loadTask = () => {
-
   };
 
   /* Создание создание задачи */
