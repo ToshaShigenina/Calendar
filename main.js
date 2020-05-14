@@ -348,22 +348,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const changeTask = () => {
+
+  };
+
   /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
   const addTask = (event) => {
     let target = event.target;
 
     if (target.closest('.button__add') && !controlInput.classList.contains('control__edit')) {
       controlInput.classList.add('control__edit');
-    } else if (target.closest('.button__add') && controlInput.value) {
+    } else if (target.closest('.button__add') && controlInput.value.trim()) {
       const date = document.querySelector('span.day__select').dataset.day;
-      console.log(date);
-      const task = createTask(createTaskId(), controlInput.value, `${date.slice(3, 5)}.${transformValue(+date.slice(5, 7)+1)}.${date.slice(7)}`);
+      const task = createTask(createTaskId(), controlInput.value.trim(), `${date.slice(3, 5)}.${transformValue(+date.slice(5, 7)+1)}.${date.slice(7)}`);
       taskActive.prepend(task);
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
     } else if (target.closest('.button__delete')) {
       controlInput.value = '';
       controlInput.classList.remove('control__edit');
+    }
+  };
+
+  /* Добавление задачи в список при нажатии Enter */
+  const addTaskEnter = (event) => {
+    if (event.key === 'Enter') {
+      if (controlInput.value.trim()) {
+        const date = document.querySelector('span.day__select').dataset.day;
+        const task = createTask(createTaskId(), controlInput.value.trim(), `${date.slice(3, 5)}.${transformValue(+date.slice(5, 7)+1)}.${date.slice(7)}`);
+        taskActive.prepend(task);
+        controlInput.value = '';
+        controlInput.classList.remove('control__edit');
+      }
     }
   };
 
@@ -391,8 +407,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', changeMenu);
   window.addEventListener('load', loadDaySelect);
   control.addEventListener('click', addTask);
+  controlInput.addEventListener('keydown', addTaskEnter);
   dashboard.addEventListener('click', deleteTask);
   dashboard.addEventListener('click', checkTask);
+  dashboard.addEventListener('click', changeTask);
   calendar.addEventListener('click', changeMonth);
   calendar.addEventListener('click', loadDaySelect);
 
