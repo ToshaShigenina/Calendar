@@ -504,6 +504,7 @@ body {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   width: 50vw;
+  max-width: 700px;
   padding: 1rem;
   border-radius: 10px;
   background-color: #fff;
@@ -550,6 +551,10 @@ body {
   .dashboard {
     width: 90%;
   }
+
+  .popup {
+    width: 60vw;
+  }
 }
 
 @media (max-width: 870px) {
@@ -591,6 +596,10 @@ body {
 
   .day {
     line-height: 26px;
+  }
+
+  .popup {
+    width: 70vw;
   }
 }
 
@@ -636,6 +645,11 @@ body {
   .dashboard {
     height: calc(100vh - 210px);
   }
+
+
+  .popup {
+    width: 80vw;
+  }
 }
 
 @media (max-width: 425px) {
@@ -645,5 +659,9 @@ body {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+  }
+
+  .popup {
+    width: 96vw;
   }
 }

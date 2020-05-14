@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dashboard = document.querySelector('.dashboard'),
     title = document.querySelector('h1.title'),
     burgerMenu = document.querySelector('.burger__menu'),
-    menu = document.querySelector('.menu');
+    menu = document.querySelector('.menu'),
+    overview = document.querySelector('.over');
 
   let month = now.getMonth(),
     year = now.getFullYear(),
@@ -348,8 +349,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const changeTask = () => {
+  const changeTask = (event) => {
+    const target = event.target.closest('.task__item span.task__content');
+    const task = event.target.closest('.task__item');
+    const popupInput = document.querySelector('.popup__input');
+    let dayChange;
 
+    const editPopup = (event) => {
+      const target = event.target;
+
+      if (target.closest('.button__cancel') || target.matches('.over')) {
+        overview.classList.remove('over__open');
+        overview.removeEventListener('click', editPopup);
+      } else if (target.closest('.button__ok')) {
+        if (popupInput.value.trim()) {
+          dayChange.content = popupInput.value.trim();
+          task.innerHTML = `<button class="button button__check"></button><span class="task__content">${dayChange.content}<span class="task__date">${dayChange.date}</span></span><button class="button button__delete"></button>`;
+          saveData(data);
+          overview.classList.remove('over__open');
+          overview.removeEventListener('click', editPopup);
+        }
+      }
+    };
+
+    if (target) {
+      dayChange = data[dayId].find((item) => item.id === task.id);
+      popupInput.value = dayChange.content;
+      overview.classList.add('over__open');
+      overview.addEventListener('click', editPopup);
+    }
   };
 
   /* Раскрытие поля ввода, добавление задачи в список активных задач, очистка поля ввода при закрытии */
